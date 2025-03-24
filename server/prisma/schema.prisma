@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+enum ContractStatus {
+  Draft
+  Finalized
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String 
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contracts Contract[]
+}
+
+model Contract {
+  id          String         @id @default(uuid()) 
+  clientName  String
+  contractData Json
+  status      ContractStatus @default(Draft) 
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  userId     String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+   updates     ContractUpdate[]
+
+  @@index([status])
+  @@index([clientName])
+}
+
+model ContractUpdate {
+  id          String         @id @default(uuid()) 
+  contractId  String         
+  status      ContractStatus 
+  updatedAt   DateTime       @default(now())
+
+  contract    Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId]) 
+}
