@@ -3,6 +3,7 @@ import { body } from "express-validator";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { prisma } from "../../config/db";
 import { EmailInUseError } from "../../errors/email-in-use-error";
+import { Password } from "../../service/password";
 
 const router =Router()
 router.post('/api/users/signup',[
@@ -11,14 +12,17 @@ router.post('/api/users/signup',[
     body('password').notEmpty().withMessage('password is required')
 ],validateRequest,async(req:Request,res:Response)=>{
     console.log('enter into signup')
-    const existingUser=await prisma.user.findUnique({where:{email:req.body.email}})
+    const {name,email,password}=req.body
+   
+    const existingUser=await prisma.user.findUnique({where:{email}})
     if(existingUser){
         throw new EmailInUseError()
     }
-  const user=await  prisma.user.create({data:{
-        name:req.body.name,
-        email:req.body.email,
-        password:req.body.password
+    const hashPassword=await Password.toHash(password)
+    const user=await  prisma.user.create({data:{
+        name,
+        email,
+        password:hashPassword
     }})
     res.send(user)
 })

@@ -1,22 +1,13 @@
 import 'dotenv/config'
-
-import {faker} from '@faker-js/faker'
-
+import { connectDB  } from './config/db'
+import { createServer } from "http";
+import { initializeSocket } from "./socket";
 import {app} from './app'
-import { connectDB, prisma } from './config/db'
 
-function main(){
-    Array.from({length:10}).map(async (_,i)=>{
-        await prisma.user.create({
-           data:{
-                name:faker.company.name(),
-                email:faker.internet.email(),
-                password:faker.internet.password()
-           }
-        })
-    })
-}
-// main()
+
+const server = createServer(app);
+initializeSocket(server);
+
 const port = 3000
 
 const start = async()=>{
@@ -31,7 +22,7 @@ const start = async()=>{
         console.error(error)
     }finally{
 
-        app.listen(port,()=>console.log('the server is running on 3000!!!'))
+        server.listen(port,()=>console.log('the server is running on 3000!!!'))
     }
 }
 start()
