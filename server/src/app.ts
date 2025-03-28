@@ -11,6 +11,8 @@ import { signInRouter } from './routes/user/signIn'
 import { signOutRouter } from './routes/user/signOut'
 import { createContractRouter } from './routes/contract/creatContract'
 import { updateContractRouter } from './routes/contract/updateContract'
+import { listContractRouter } from './routes/contract/listContract'
+import { getContractRouter } from './routes/contract/getContract'
 const app = express()
 
 app.set('trust proxy',true)
@@ -26,6 +28,8 @@ app.use(createContractRouter)
 app.use(signOutRouter)
 app.use(singupRouter)
 app.use(signInRouter)
+app.use(listContractRouter)
+app.use(getContractRouter)
 app.all('*',async()=>{
     throw new NotFoundError();
 })

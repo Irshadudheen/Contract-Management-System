@@ -1,13 +1,24 @@
 import axios from "axios";
-
+import  { getData } from '../hooks/useGetUser';
 const API_URL = "http://localhost:3000/api";
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Automatically include cookies in every request
+  withCredentials: true, 
 });
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = getData();
+    if (token) {
+      config.headers["Authorization"] = token;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+)
 
-// Response Interceptor (Optional: Handle Errors Globally)
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
