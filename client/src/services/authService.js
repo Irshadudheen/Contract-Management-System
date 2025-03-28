@@ -10,7 +10,7 @@ export const userSignUp = async (signup) => {
 };
 export const checkAuth = async () => {
   try {
-    const { data } = await axiosInstance.get("/auth/me");
+    const { data } = await axiosInstance.get("/users/me");
     return data;
   } catch {
     return null;
@@ -18,5 +18,6 @@ export const checkAuth = async () => {
 };
 
 export const logoutUser = async () => {
-  await axiosInstance.post("/api/users/signout");
+  await axiosInstance.post("/users/signout");
 };
+

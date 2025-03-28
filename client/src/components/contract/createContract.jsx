@@ -94,7 +94,7 @@ const CreatContract = () => {
         post.image=url
         console.log(post)
       
-     return
+        toast.success('Contract created successfully!');
             
             navigate('/');
      

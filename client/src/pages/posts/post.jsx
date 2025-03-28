@@ -1,8 +1,10 @@
 import { ContainerPost, DetailsPost, HeadingPost, ImagePost, TextPost } from '../../components/materialui';
-
-const Post = ({ post }) => {
-    const url = post.image ? post.image : 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=752&q=80';
-    
+import { useContractContext } from '../../context/contractContext';
+const Post = ({ post:initialPost }) => {
+console.log(initialPost,'this is the post')
+const { contracts } = useContractContext();
+const post = contracts[initialPost.id] || initialPost;
+const url = post.image ? post.image : 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=752&q=80';
     const addEllipsis = (str, limit) => {
         return str.length > limit ? str.substring(0, limit) + '...' : str;
     } 

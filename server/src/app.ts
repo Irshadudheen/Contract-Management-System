@@ -13,6 +13,7 @@ import { createContractRouter } from './routes/contract/creatContract'
 import { updateContractRouter } from './routes/contract/updateContract'
 import { listContractRouter } from './routes/contract/listContract'
 import { getContractRouter } from './routes/contract/getContract'
+import { updateContractDetailRouter } from './routes/contract/updateContractDetail'
 const app = express()
 
 app.set('trust proxy',true)
@@ -30,6 +31,7 @@ app.use(singupRouter)
 app.use(signInRouter)
 app.use(listContractRouter)
 app.use(getContractRouter)
+app.use(updateContractDetailRouter)
 app.all('*',async()=>{
     throw new NotFoundError();
 })

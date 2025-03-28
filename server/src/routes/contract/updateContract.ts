@@ -2,9 +2,10 @@ import { Router } from "express";
 import { prisma } from "../../config/db";
 import { BadRequestError } from "../../errors/bad-request-error";
 import { getIO } from "../../socket";
+import { currentUser } from "../../middlewares/currentUser";
 
 const router =Router();
-router.patch('/api/contract',async(req,res)=>{
+router.patch('/api/contract',currentUser,async(req,res)=>{
     const {status,contractId}=req.body;
     const updatedContract = await prisma.contract.update({
         where:{id:contractId},

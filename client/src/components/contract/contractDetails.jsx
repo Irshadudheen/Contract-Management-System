@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, styled } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { getContractById } from '../../services/contractService';
+import io from 'socket.io-client';
 
+import { useContractContext } from '../../context/contractContext';
+import { updateContractStatus, getContractById } from '../../services/contractService';
 const Container = styled(Box)(({ theme }) => ({
     margin: '50px 100px',
     [theme.breakpoints.down('md')]: {
@@ -41,6 +43,13 @@ const Heading = styled(Typography)`
     justify-content: center;
 `;
 
+const HeadingContainer = styled(Box)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+`;
+
 const Author = styled(Box)(({ theme }) => ({
     color: '#878787',
     display: 'flex',
@@ -59,15 +68,33 @@ const StatusBadge = styled(Box)(({ theme, status }) => ({
     fontSize: '0.8rem',
     backgroundColor: getStatusColor(status),
     color: 'white',
-    marginLeft: '10px'
+    marginLeft: '10px',
+    cursor: 'pointer'
 }));
+
+const StatusDropdown = styled(Box)`
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 10;
+`;
+
+const StatusOption = styled(Box)`
+    padding: 8px 12px;
+    cursor: pointer;
+    &:hover {
+        background-color: #f0f0f0;
+    }
+`;
 
 // Function to determine status color
 const getStatusColor = (status) => {
     switch(status?.toLowerCase()) {
         case 'draft': return '#9370DB';      // Muted Purple
         case 'in progress': return '#FFA500'; // Orange
-        case 'completed': return '#2E8B57';   // Sea Green
+        case 'finalized': return '#2E8B57';   // Sea Green
         case 'pending': return '#4169E1';     // Royal Blue
         case 'cancelled': return '#DC143C';   // Crimson
         default: return '#808080';            // Gray
@@ -76,20 +103,57 @@ const getStatusColor = (status) => {
 
 const DetailView = () => {
     const url = 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80';
-    
+    const { contracts, updateContractStatus: globalUpdateStatus } = useContractContext();
     const [post, setPost] = useState({});
+    const [socket, setSocket] = useState(null);
+    const [showStatusDropdown, setShowStatusDropdown] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
+
+    const STATUSES = ['Draft', 'Finalized', 'Pending', 'Cancelled'];
     
     useEffect(() => {
+        // Establish Socket.IO connection
+        if (contracts[id]) {
+            setPost(contracts[id]);
+        }
+      
+
+     
+
+       
+
+        // Fetch initial contract data
         const fetchData = async () => {
-            let response = await getContractById(id);
-            if (response) {
-                setPost(response.contract);
+            try {
+                let response = await getContractById(id);
+                if (response) {
+                    setPost(response.contract);
+                }
+            } catch (error) {
+                console.error('Failed to fetch contract:', error);
             }
         }
         fetchData();
-    }, [id]);
+
+        // Cleanup socket connection
+       
+    }, [id,contracts]);
+
+    const handleStatusChange = async (newStatus) => {
+        try {
+            // Update status via API
+            await updateContractStatus(id, newStatus);
+            
+            // Emit socket event for real-time update
+            globalUpdateStatus(id, newStatus);
+
+            // Close dropdown
+            setShowStatusDropdown(false);
+        } catch (error) {
+            console.error('Failed to update status:', error);
+        }
+    }
 
     const deleteBlog = async () => {  
         // Uncomment and implement actual delete functionality
@@ -131,10 +195,32 @@ const DetailView = () => {
                     </>
                 )}
             </Box>
-            <Heading>
-                {post.contractTitle}
-                {post.status && <StatusBadge component="span" status={post.status}>{post.status}</StatusBadge>}
-            </Heading>
+            <HeadingContainer>
+                <Heading component="h1">{post.contractTitle}</Heading>
+                <Box style={{ position: 'relative' }}>
+                    <StatusBadge 
+                        component="span" 
+                        status={post.status}
+                        onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+                    >
+                        {post.status}
+                    </StatusBadge>
+                    {showStatusDropdown && (
+                        <StatusDropdown>
+                            {STATUSES.filter(status => status.toLowerCase() !== post.status?.toLowerCase())
+                                .map((status) => (
+                                    <StatusOption 
+                                        key={status}
+                                        onClick={() => handleStatusChange(status)}
+                                    >
+                                        {status}
+                                    </StatusOption>
+                                ))
+                            }
+                        </StatusDropdown>
+                    )}
+                </Box>
+            </HeadingContainer>
 
             <Author>
                 <Link 

@@ -8,6 +8,7 @@ import useGetUserData from "./hooks/useGetUser";
 import { useEffect, useState } from "react";
 import CreatContract from "./components/contract/createContract";
 import DetailView from "./components/contract/contractDetails";
+import Update from "./components/contract/updateContract";
 
 const App = () => {
   const currentUser = useGetUserData()
@@ -60,6 +61,14 @@ console.log(currentUser,'the current user from redux')
           element={
             <PrivateRoute isAuthenticated={isAuthenticated}>
               <DetailView />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/update/:id"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <Update />
             </PrivateRoute>
           }
         />

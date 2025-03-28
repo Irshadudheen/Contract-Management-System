@@ -18,3 +18,9 @@ export const updateContractStatus = async (contractId, status) => {
   const { data } = await axiosInstance.patch(`/contract`, { contractId, status });
   return data;
 };
+export const updateContractById = async (contractData, contractId)=>{
+  console.log('hi')
+  const { data } = await axiosInstance.put(`/contract/${contractId}`, contractData);
+  console.log(data,"the data from update contract")
+  return data;
+}

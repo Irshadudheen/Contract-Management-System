@@ -72,13 +72,14 @@ const loginUser = async () => {
       // console.log(response)
       // return
       dispatch(setUser({
-          name: response.name,
-          email:response.email,
-          id: response.id,
+          name: response.user.name,
+          email:response.user.email,
+          id: response.user.id,
           token:response.token
       }))
-      navigate('/')
+     
       toast.success('Login successful!');
+      navigate('/')
     }
       catch(error){
         toast.error(error.response.data.errors[0].message)
