@@ -22,7 +22,7 @@ app.use(json())
 
 app.use(cookieParser())
 app.use(cors({
-    origin:'http://localhost:5173',credentials:true }))
+    origin:'https://contract-management-system-fawn.vercel.app',credentials:true }))
 // app.use(currentUserRouter)
 app.use(updateContractRouter)
 app.use(deleteContractRouter)
