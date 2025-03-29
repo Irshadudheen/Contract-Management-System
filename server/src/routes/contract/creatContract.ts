@@ -9,11 +9,11 @@ router.post('/api/contract',[body('clientName').isString().notEmpty().withMessag
     body('description').notEmpty().withMessage('contractData is required')
 ],validateRequest,currentUser,
     async(req:Request,res:Response)=>{
-    const {clientName,description,title}=req.body;
+    const {clientName,description,title,price}=req.body;
     console.log(req.headers.authorization)
     const contract = await prisma.contract.create({
         data:{
-            clientName,contractTitle:title,contractData:description,userId:req.currentUser?.id as string,
+            price,clientName,contractTitle:title,contractData:description,userId:req.currentUser?.id as string
                         
     } })
     res.send(contract) 

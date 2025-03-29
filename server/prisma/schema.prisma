@@ -30,6 +30,7 @@ model Contract {
   id          String         @id @default(uuid()) 
   clientName  String
   contractTitle String
+  price Decimal
   contractData Json
   status      ContractStatus @default(Draft) 
   createdAt   DateTime       @default(now())

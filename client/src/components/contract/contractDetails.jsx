@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, styled } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import io from 'socket.io-client';
+
 
 import { useContractContext } from '../../context/contractContext';
-import { updateContractStatus, getContractById } from '../../services/contractService';
+import { updateContractStatus, getContractById, deleteContractById } from '../../services/contractService';
+import toast from 'react-hot-toast';
 const Container = styled(Box)(({ theme }) => ({
     margin: '50px 100px',
     [theme.breakpoints.down('md')]: {
@@ -54,11 +55,36 @@ const Author = styled(Box)(({ theme }) => ({
     color: '#878787',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',
     margin: '20px 0',
     [theme.breakpoints.down('sm')]: {
-        display: 'block'
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: '10px'
     },
 }));
+
+const ContractInfo = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '20px',
+    [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: '10px'
+    },
+}));
+
+const PriceBox = styled(Typography)({
+    fontWeight: 600,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '4px 12px',
+    backgroundColor: '#f0f7ff',
+    borderRadius: '4px',
+    border: '1px solid #e0e0e0'
+});
 
 const StatusBadge = styled(Box)(({ theme, status }) => ({
     display: 'inline-block',
@@ -118,11 +144,6 @@ const DetailView = () => {
             setPost(contracts[id]);
         }
       
-
-     
-
-       
-
         // Fetch initial contract data
         const fetchData = async () => {
             try {
@@ -135,9 +156,6 @@ const DetailView = () => {
             }
         }
         fetchData();
-
-        // Cleanup socket connection
-       
     }, [id,contracts]);
 
     const handleStatusChange = async (newStatus) => {
@@ -155,9 +173,10 @@ const DetailView = () => {
         }
     }
 
-    const deleteBlog = async () => {  
+    const deleteContract = async () => {  
         // Uncomment and implement actual delete functionality
-        // await deleteBlogById(id);
+        await deleteContractById(id);
+        toast.success('Contract deleted successfully!');
         navigate('/')
     }
 
@@ -176,6 +195,15 @@ const DetailView = () => {
         });
     }
 
+    // Format price with currency symbol
+    const formatPrice = (price) => {
+        if (!price) return '$0.00';
+        return `$${Number(price).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    };
+
     // Check if created and updated dates are the same
     const areDatesEqual = () => {
         if (!post.createdAt || !post.updatedAt) return true;
@@ -191,7 +219,7 @@ const DetailView = () => {
                         <Link to={`/update/${post.id}`}>
                             <EditIcon color="primary" />
                         </Link>
-                        <DeleteIcon onClick={deleteBlog} color="error" />
+                        <DeleteIcon onClick={deleteContract} color="error" />
                     </>
                 )}
             </Box>
@@ -223,22 +251,28 @@ const DetailView = () => {
             </HeadingContainer>
 
             <Author>
-                <Link 
-                    to={`/?username=${post.contractTitle}`} 
-                    style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}
-                >
-                    <Typography component="span">
-                        Client: {post.clientName && 
-                            <Typography component="span" sx={{fontWeight: 600, marginLeft: '5px'}}>
-                                {post.clientName}
-                            </Typography>
-                        }
-                    </Typography>
-                </Link>
+                <ContractInfo>
+                    <Link 
+                        to={`/?username=${post.contractTitle}`} 
+                        style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}
+                    >
+                        <Typography component="span">
+                            Client: {post.clientName && 
+                                <Typography component="span" sx={{fontWeight: 600, marginLeft: '5px'}}>
+                                    {post.clientName}
+                                </Typography>
+                            }
+                        </Typography>
+                    </Link>
+                    
+                    <PriceBox component="span">
+                        Contract Amount: {formatPrice(post.contractAmount || post.price)}
+                    </PriceBox>
+                </ContractInfo>
+                
                 <Typography 
                     component="span"
                     style={{
-                        marginLeft: 'auto', 
                         color: '#666',
                         fontStyle: 'italic'
                     }}

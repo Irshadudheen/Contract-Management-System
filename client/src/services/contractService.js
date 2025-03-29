@@ -24,3 +24,7 @@ export const updateContractById = async (contractData, contractId)=>{
   console.log(data,"the data from update contract")
   return data;
 }
+export const deleteContractById = async (contractId)=>{
+  const {data}= await axiosInstance.delete(`/contract/${contractId}`);
+  return data
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 
-import { styled, Box, TextareaAutosize, Button, InputBase, FormControl  } from '@mui/material';
+import { styled, Box, TextareaAutosize, Button, InputBase, FormControl } from '@mui/material';
 import { AddCircle as Add } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -48,10 +48,9 @@ const Textarea = styled(TextareaAutosize)`
 const initialPost = {
     title: '',
     description: '',
-    clientName:'',
-  
+    clientName: '',
+    contractAmount: '',  // Added new field for contract amount
     categories: '',
-    
 }
 
 const CreatContract = () => {
@@ -61,7 +60,7 @@ const CreatContract = () => {
     const [post, setPost] = useState(initialPost);
     const [file, setFile] = useState('');
     // const { account } = useContext(DataContext);
-    const [url,setUrl]=useState( 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80')
+    const [url, setUrl] = useState('https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80')
 
     // const url = post.image ? post.image : 'https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80';
     
@@ -85,22 +84,20 @@ const CreatContract = () => {
     }, [file])
 
     const savePost = async () => {
-     
-       
         try {
             const response = await createContract(post)
-           console.log(response)
+            console.log(response)
        
-        post.image=url
-        console.log(post)
+            post.image = url
+            console.log(post)
       
-        toast.success('Contract created successfully!');
+            toast.success('Contract created successfully!');
             
             navigate('/');
      
-    } catch (error) {
+        } catch (error) {
             toast.error(error.response.data.errors[0].message)
-    }
+        }
     }
 
     const handleChange = (e) => {
@@ -125,6 +122,12 @@ const CreatContract = () => {
                 <Button onClick={() => savePost()} variant="contained" color="primary">Publish</Button>
             </StyledFormControl>
             <InputTextField onChange={(e) => handleChange(e)} name='clientName' placeholder="Client name" />
+            <InputTextField 
+                onChange={(e) => handleChange(e)} 
+                name='price' 
+                placeholder="Contract Amount ($)" 
+                type="number" 
+            />
             <Textarea
                 rowsMin={5}
                 placeholder="Write the key contract details, including parties involved, obligations, and timeline..."

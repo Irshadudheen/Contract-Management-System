@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { loginUser as userLogin, userSignUp } from "../services/authService";
 
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { Box, TextField } from "@mui/material";
 import toast from 'react-hot-toast';
 import { useDispatch } from "react-redux";
 import {setUser} from '../redux/userSlice'
+import useGetUserData from "../hooks/useGetUser";
 
 
 
@@ -27,8 +28,13 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
+  const currentUser = useGetUserData()
+  useEffect(()=>{
+    if(currentUser.token){
+      navigate('/')
+    }
+  },[currentUser])
   const [error, showError] = useState('');
   const [account, toggleAccount] = useState('login');
   const [login, setLogin] = useState(loginInitialValues);

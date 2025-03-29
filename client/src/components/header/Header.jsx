@@ -36,8 +36,8 @@ const dispatch = useDispatch()
         <Component>
             <Container>
                 <Link to='/'>HOME</Link>
-                <Link to='/about'>ABOUT</Link>
-                <Link to='/contact'>CONTACT</Link>
+                <Link >ABOUT</Link>
+                <Link >CONTACT</Link>
                 <Link 
                  onClick={handleLogout}
                  >LOGOUT</Link>

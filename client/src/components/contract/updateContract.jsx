@@ -152,6 +152,14 @@ const Update = () => {
                         value={post.clientName}
                         onChange={handleChange}
                     />
+                    <InputTextField 
+                        fullWidth
+                        placeholder="Contract Amount"
+                        type='number'
+                        name='price'
+                        value={post.price}
+                        onChange={handleChange}
+                    />
                     <Button 
                         onClick={updateContractPost} 
                         variant="contained" 

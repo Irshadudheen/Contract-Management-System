@@ -7,11 +7,11 @@ const router = Router()
 router.put('/api/contract/:id',currentUser,async(req:Request,res:Response)=>{
     console.log('the request body is ',req.body)
 const {id}=req.params;
-const {contractTitle,clientName,contractData}=req.body;
+const {contractTitle,clientName,contractData,price}=req.body;
 const updatedContract = await prisma.contract.update({
     where:{id},
     data:{
-        contractTitle,clientName,contractData
+        contractTitle,clientName,contractData,price
     }
 })
 if(!updatedContract){

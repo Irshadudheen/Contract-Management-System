@@ -14,6 +14,7 @@ import { updateContractRouter } from './routes/contract/updateContract'
 import { listContractRouter } from './routes/contract/listContract'
 import { getContractRouter } from './routes/contract/getContract'
 import { updateContractDetailRouter } from './routes/contract/updateContractDetail'
+import { deleteContractRouter } from './routes/contract/deleteContract'
 const app = express()
 
 app.set('trust proxy',true)
@@ -24,7 +25,7 @@ app.use(cors({
     origin:'http://localhost:5173',credentials:true }))
 // app.use(currentUserRouter)
 app.use(updateContractRouter)
-
+app.use(deleteContractRouter)
 app.use(createContractRouter)
 app.use(signOutRouter)
 app.use(singupRouter)

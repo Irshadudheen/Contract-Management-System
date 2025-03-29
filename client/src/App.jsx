@@ -11,36 +11,48 @@ import DetailView from "./components/contract/contractDetails";
 import Update from "./components/contract/updateContract";
 
 const App = () => {
-  const currentUser = useGetUserData()
-console.log(currentUser,'the current user from redux')
+  const currentUser = useGetUserData();
+  console.log(currentUser, 'the current user from redux');
 
-  const [isAuthenticated, isUserAuthenticated] = useState(currentUser.name ? true : false);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!currentUser.token);
 
   const PrivateRoute = ({ isAuthenticated, children }) => {
-  
-    return isAuthenticated ?  (
+    return isAuthenticated ? (
       <>
         <Header />
-      {children}
-    </>
-       
-     
+        {children}
+      </>
     ) : (
       <Navigate replace to="/login" />
     );
   };
+
   useEffect(() => {
-    if(currentUser.name){
-      console.log('hai')
-      isUserAuthenticated(true)
+    if (currentUser.token || currentUser.name) {
+      console.log('User authenticated');
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
     }
-  }, [isAuthenticated]);
+  }, [currentUser]);
+
+  // Redirect authenticated users away from login page
+  const AuthRoute = ({ children }) => {
+    return !isAuthenticated ? children : <Navigate replace to="/" />;
+  };
+
   return (
-    // <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route
+    <Router>
+      <Routes>
+        <Route 
+          path="/login" 
+          element={
+            <AuthRoute>
+              <LoginPage />
+            </AuthRoute>
+          } 
+        />
+        <Route
           path="/"
           element={
             <PrivateRoute isAuthenticated={isAuthenticated}>
@@ -48,7 +60,7 @@ console.log(currentUser,'the current user from redux')
             </PrivateRoute>
           }
         />
-          <Route
+        <Route
           path="/create"
           element={
             <PrivateRoute isAuthenticated={isAuthenticated}>
@@ -56,7 +68,7 @@ console.log(currentUser,'the current user from redux')
             </PrivateRoute>
           }
         />
-         <Route
+        <Route
           path="/details/:id"
           element={
             <PrivateRoute isAuthenticated={isAuthenticated}>
@@ -72,10 +84,8 @@ console.log(currentUser,'the current user from redux')
             </PrivateRoute>
           }
         />
-       
-        </Routes>
-      </Router>
-    // </AuthProvider>
+      </Routes>
+    </Router>
   );
 };
 
