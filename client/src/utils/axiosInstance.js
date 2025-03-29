@@ -1,6 +1,6 @@
 import axios from "axios";
 import  { getData } from '../hooks/useGetUser';
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://contract.gigglewagon.shop/api";
 
 const axiosInstance = axios.create({
   baseURL: API_URL,

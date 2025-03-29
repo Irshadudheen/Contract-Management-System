@@ -10,7 +10,7 @@ export const ContractProvider = ({ children }) => {
 
     useEffect(() => {
         
-        const newSocket = io('http://localhost:3000');
+        const newSocket = io('https://contract.gigglewagon.shop');
 
         newSocket.on('contractUpdated', (updatedContract) => {
             setContracts(prevContracts => ({
