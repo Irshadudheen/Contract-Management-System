@@ -18,8 +18,7 @@ export const currentUser = (req:Request,res:Response,next:NextFunction)=>{
     try {
         const payload = verifyToken(req.headers.authorization) ;
         req.currentUser = payload;
-        console.log(payload,'the payload')
-        console.log(req.currentUser,'the user')
+        
     } catch (error) {
 
     console.log(error)

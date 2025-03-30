@@ -6,8 +6,8 @@ import { BadRequestError } from "../../errors/bad-request-error";
 import { currentUser } from "../../middlewares/currentUser";
 
 const router = Router();
-router.get('/api/contract/:id',[param('id').notEmpty().withMessage('Contract id required')],validateRequest,
-currentUser,
+router.get('/api/contract/:id',currentUser,[param('id').notEmpty().withMessage('Contract id required')],validateRequest,
+
 async (req:Request,res:Response)=>{
     const {id}=req.params;
     const userId = req.headers.authorization as string;

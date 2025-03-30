@@ -28,8 +28,8 @@ axiosInstance.interceptors.response.use(
   (error) => {
     console.error("API Error:", error.response?.data || error.message);
     console.log(error.status, 'error status')
-    if(error.status === 400){
-   
+    if(error.status === 401 || error.status === 403) {
+      
         store.dispatch(removeUser())
     }
     return Promise.reject(error);

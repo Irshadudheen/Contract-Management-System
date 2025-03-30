@@ -5,9 +5,9 @@ import { validateRequest } from "../../middlewares/validateRequest";
 import { currentUser } from "../../middlewares/currentUser";
 
 const router = Router();
-router.post('/api/contract',[body('clientName').isString().notEmpty().withMessage('Client name is required'),
+router.post('/api/contract',currentUser,[body('clientName').isString().notEmpty().withMessage('Client name is required'),
     body('description').notEmpty().withMessage('contractData is required')
-],validateRequest,currentUser,
+],validateRequest,
     async(req:Request,res:Response)=>{
     const {clientName,description,title,price}=req.body;
     console.log(req.headers.authorization)
