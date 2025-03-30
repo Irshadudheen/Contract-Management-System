@@ -1,5 +1,8 @@
 import axios from "axios";
 import  { getData } from '../hooks/useGetUser';
+
+import { removeUser } from "../redux/userSlice";
+import { store } from "../redux/storage";
 const API_URL = "https://contract.gigglewagon.shop/api";
 
 const axiosInstance = axios.create({
@@ -20,9 +23,15 @@ axiosInstance.interceptors.request.use(
 )
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => response ,
+   
   (error) => {
     console.error("API Error:", error.response?.data || error.message);
+    console.log(error.status, 'error status')
+    if(error.status === 400){
+   
+        store.dispatch(removeUser())
+    }
     return Promise.reject(error);
   }
 );
