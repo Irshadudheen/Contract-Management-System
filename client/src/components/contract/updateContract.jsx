@@ -128,15 +128,7 @@ const Update = () => {
             <Image src={imageURL} alt="post" />
 
             <StyledFormControl>
-                <label htmlFor="fileInput">
-                    <Add fontSize="large" color="action" style={{cursor: 'pointer'}} />
-                </label>
-                <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    onChange={(e) => setFile(e.target.files[0])}
-                />
+               
                 <Stack spacing={2} direction="row" sx={{ width: '100%', alignItems: 'center' }}>
                     <InputTextField 
                         fullWidth

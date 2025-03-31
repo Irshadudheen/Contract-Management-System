@@ -109,15 +109,8 @@ const CreatContract = () => {
             <Image src={url} alt="post" />
 
             <StyledFormControl>
-                <label htmlFor="fileInput">
-                    <Add fontSize="large" color="action" />
-                </label>
-                <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    onChange={(e) => setFile(e.target.files[0])}
-                />
+                
+                
                 <InputTextField onChange={(e) => handleChange(e)} name='title' placeholder="Title" />
                 <Button onClick={() => savePost()} variant="contained" color="primary">Publish</Button>
             </StyledFormControl>

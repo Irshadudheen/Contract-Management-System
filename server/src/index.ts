@@ -2,6 +2,7 @@ import 'dotenv/config'
 import { connectDB  } from './config/db'
 import { createServer } from "http";
 import { initializeSocket } from "./socket";
+console.log(process.env.NODE_ENV)
 import {app} from './app'
 
 

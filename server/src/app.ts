@@ -21,8 +21,19 @@ app.set('trust proxy',true)
 app.use(json())
 
 app.use(cookieParser())
+const allowedOrigins =
+  process.env.NODE_ENV === 'production'
+    ? ['https://contract-management-system-fawn.vercel.app']
+    : ['http://localhost:3000', 'http://localhost:5173'];
 app.use(cors({
-    origin:'https://contract-management-system-fawn.vercel.app',credentials:true }))
+    origin:(origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },credentials:true }))
+   
 // app.use(currentUserRouter)
 app.use(updateContractRouter)
 app.use(deleteContractRouter)
