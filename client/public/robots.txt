@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://contract-management-system-fawn.vercel.app/sitemap.xml
